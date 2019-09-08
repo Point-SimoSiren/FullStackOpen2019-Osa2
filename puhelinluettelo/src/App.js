@@ -3,13 +3,13 @@ import React, { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }, { name: 'Anja Kuusela' }
+    { id: 1, name: 'Arto Hellas' }, { id: 2, name: 'Anja Kuusela' }
   ])
   const [newName, setNewName] = useState('')
 
   const rows = () => persons.map(person =>
     <li
-      key={person.name}>
+      key={person.id}>
       {person.name}
     </li>
   )
@@ -20,14 +20,19 @@ const App = () => {
 
   const addContact = (event) => {
     event.preventDefault()
-    const contactObject = {
-      name: newName
+    const found = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
+    if (found) {
+      alert(`${newName} on jo olemassa ennestään.`)
     }
-
-    setPersons(persons.concat(contactObject))
-    setNewName('')
+    else {
+      const contactObject = {
+        id: persons.length + 1,
+        name: newName
+      }
+      setPersons(persons.concat(contactObject))
+      setNewName('')
+    }
   }
-
 
   return (
     <div>
@@ -48,7 +53,6 @@ const App = () => {
       </div>
     </div>
   )
-
 }
 
 export default App
