@@ -1,20 +1,22 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PersonForm from './components/PersonForm'
 import FilterForm from './components/FilterForm'
 import Persons from './components/Persons'
-
+import personService from './services/persons'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { id: 1, name: 'Arto Hellas', phone: '040-5441358' },
-    { id: 2, name: 'Anja Kuusela', phone: '050-1365533' },
-    { id: 3, name: 'Benjamin Sironen', phone: '050-0315823' },
-    { id: 4, name: 'Dan Michaels', phone: '040-1361122' },
-    { id: 5, name: 'Risto Rapia', phone: '050-1777533' },
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
+  }, [])
 
   const handleNameInputChange = (event) => {
     setNewName(event.target.value)
@@ -28,22 +30,60 @@ const App = () => {
     setSearch(event.target.value)
   }
 
+  const handleDeleteClick = id => {
+    const personToRemove = persons.find(person => person.id === id)
+    if (window.confirm(`Removing contact ${personToRemove.name}. Are you sure? `)) {
+      personService
+        .remove(id)
+        .then(promise => {
+          setPersons(persons.filter(filtered => filtered.id !== id))
+          if (promise.status === 200) {
+            alert(`CONFIRMATION:\n ${personToRemove.name} was deleted from the database.`)
+          }
+        })
+    }
+  }
+  ////////A//D//D////////////////////
   const addContact = (event) => {
     event.preventDefault()
+    const contactObject = {
+      name: newName,
+      number: newNumber
+    }
     const found = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
     if (found) {
-      alert(`${newName} already exists. Cannot add, Sorry!.`)
+      //NIMI ON JO OLEMASSA
+      if (window.confirm(`NOTICE!\n ${newName} already exists.\n
+      Want to permanently overwrite the old number?`)) {
+        //HALUTAAN MUUTTAA NUMERO
+        personService
+          .remove(found.id)
+        personService
+          .create(contactObject)
+          .then(response => {
+            setPersons(persons.concat(response.data))
+            MagicFunction() //Just before the return
+          })
+      }
+
     }
     else {
-      const contactObject = {
-        id: persons.length + 1,
-        name: newName,
-        phone: newNumber
-      }
-      setPersons(persons.concat(contactObject))
-      setNewName('')
-      setNewNumber('')
+      //UUSI NIMI
+      personService
+        .create(contactObject)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+
+        })
     }
+    //Lopuksi kaikissa tapauksissa:
+    setNewName('')
+    setNewNumber('')
+  }
+
+  const MagicFunction = () => {
+    alert(`Succesfully updated the number for ${newName}`)
+    window.location.reload()
   }
 
   return (
@@ -53,7 +93,7 @@ const App = () => {
       <h2>Numbers</h2>
       <FilterForm search={search} handleSearchInputChange={handleSearchInputChange} />
 
-      <Persons persons={persons} search={search} />
+      <Persons persons={persons} search={search} handleDeleteClick={handleDeleteClick} />
 
     </div>
   )
