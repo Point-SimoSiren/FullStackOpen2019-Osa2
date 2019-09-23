@@ -43,29 +43,29 @@ const App = () => {
         })
     }
   }
-  ////////A//D//D////////////////////
-  const addContact = (event) => {
+  //------ ADD ---------------------
+  const addContact = (event, id) => {
     event.preventDefault()
     const contactObject = {
       name: newName,
       number: newNumber
     }
-    const found = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
-    if (found) {
-      //NIMI ON JO OLEMASSA
+    const person = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
+    const changedContact = { ...person, number: newNumber }
+    //Tulostus näyttää vanhan ja uuden version json objectina
+    console.log(person)
+    console.log(changedContact)
+
+    if (person) {
+      //NIMI ON JO OLEMASSA...
       if (window.confirm(`NOTICE!\n ${newName} already exists.\n
       Want to permanently overwrite the old number?`)) {
-        //HALUTAAN MUUTTAA NUMERO
         personService
-          .remove(found.id)
-        personService
-          .create(contactObject)
-          .then(response => {
-            setPersons(persons.concat(response.data))
-            MagicFunction() //Just before the return
+          .update(person.id, changedContact)
+          .then(res => {
+            setPersons(persons.map(person => person.id !== res.id ? person : res))
           })
       }
-
     }
     else {
       //UUSI NIMI
@@ -79,11 +79,6 @@ const App = () => {
     //Lopuksi kaikissa tapauksissa:
     setNewName('')
     setNewNumber('')
-  }
-
-  const MagicFunction = () => {
-    alert(`Succesfully updated the number for ${newName}`)
-    window.location.reload()
   }
 
   return (
