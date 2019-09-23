@@ -16,19 +16,29 @@
       "id": 4
     },
     {
-      "name": "Toimi Yrjölä",
-      "number": "777777",
-      "id": 6
-    },
-    {
       "name": "tiina",
       "number": "04022985485",
       "id": 8
     },
     {
-      "name": "Mikko",
-      "number": "12223344",
+      "name": "mikko",
+      "number": "040-1953555",
       "id": 9
+    },
+    {
+      "name": "veikko",
+      "number": "404595594",
+      "id": 10
+    },
+    {
+      "name": "Jani",
+      "number": "09-222223333",
+      "id": 11
+    },
+    {
+      "name": "samu",
+      "number": "04847484",
+      "id": 13
     }
   ]
 }
