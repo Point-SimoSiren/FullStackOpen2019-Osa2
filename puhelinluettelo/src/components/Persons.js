@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Persons = ({ persons, search, handleDeleteClick }) => persons.map(person => {
+const Persons = ({ persons, search, handleDeleteClick, handleUpdateClick }) => persons.map(person => {
 
     //Jos laittaa person.name[0] , niin hakee vain ensimmäistä kirjainta
     //mutta tämä on paljon parempi hakutapa.
@@ -13,7 +13,6 @@ const Persons = ({ persons, search, handleDeleteClick }) => persons.map(person =
                         onClick={() => handleDeleteClick(person.id)}>Delete</button></td>
                     <td style={{ width: '200px' }}>{person.name} <span>&nbsp;</span></td>
                     <td style={{ width: '150px' }}>{person.number}</td>
-
                 </tr>
             </tbody>
         </table>

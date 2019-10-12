@@ -2,7 +2,7 @@ import React from 'react'
 
 // Used for adding new persons
 
-const PersonForm = ({ addContact, newNumber, newName, handleNameInputChange, handleNumberInputChange, }) => {
+const PersonForm = ({ addContact, newNumber, newName, handleNameInputChange, handleNumberInputChange }) => {
     return (
 
         <form onSubmit={addContact}>
