@@ -62,9 +62,6 @@ const App = () => {
           setTimeout(() => {
             setErrorMessage(null)
           }, 6000)
-          //Koitetaan vielä ravistella sovellusta,
-          //tai ainakin päivittää se ajantasalle sivun uudelleenlataamisella.
-          window.location.reload()
         })
     }
   }
@@ -99,9 +96,10 @@ const App = () => {
 
 
           .catch(error => {
+            console.log(error.response.data.error)
             setIsPositive(false)
             setErrorMessage(
-              `${contactObject.name}' has been deleted just before you tried to update it.\r
+              `${contactObject.name}' was deleted just before you tried to update it.\r
               Maybe by some other user of the system.`
             )
             setTimeout(() => {
@@ -126,11 +124,9 @@ const App = () => {
           }, 5000)
         })
         .catch(error => {
-          console.log('Palvelimen error olio: ', error.response.data)
           setIsPositive(false)
-          setErrorMessage(
-            `Contact '${contactObject.name}' was not added to the server due unexpected error.`
-          )
+          setErrorMessage(error.response.data.error) //Mongoosen scheema validoinnista lähtevä error.
+
           setTimeout(() => {
             setErrorMessage(null)
           }, 6000)
